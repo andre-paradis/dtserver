@@ -2,10 +2,16 @@ package com.paradis.dtserver;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.Delimiters;
+import io.netty.util.CharsetUtil;
+
+import java.nio.charset.StandardCharsets;
 
 public class DateTimeTCPEngine implements Runnable {
 
@@ -20,12 +26,14 @@ public class DateTimeTCPEngine implements Runnable {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
+
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new TCPHandler());
+                            DelimiterBasedFrameDecoder frameDecoder = new DelimiterBasedFrameDecoder(80,true, Delimiters.lineDelimiter());
+                            ch.pipeline().addLast(frameDecoder, new TCPHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -49,18 +57,3 @@ public class DateTimeTCPEngine implements Runnable {
     }
 }
 
-class TCPHandler extends ChannelInboundHandlerAdapter {
-
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        // Discard the received data silently.
-        ((ByteBuf) msg).release();
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
-    }
-}
