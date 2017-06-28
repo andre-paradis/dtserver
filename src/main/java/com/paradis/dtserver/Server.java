@@ -8,6 +8,7 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
 
+        // parse timeout and port params
         OptionParser parser = new OptionParser();
         parser.accepts( "port" ).withRequiredArg().ofType( Integer.class ).defaultsTo(40000);
         parser.accepts( "idle-timeout" ).withRequiredArg().ofType( Integer.class ).defaultsTo(5);
@@ -16,6 +17,7 @@ public class Server {
         int port = ((Integer)options.valueOf("port")).intValue();
         int idleTimeout = ((Integer)options.valueOf("idle-timeout")).intValue();
 
+        // start your engines
         new Thread(new DateTimeTCPEngine(port, idleTimeout)).start();
         new Thread(new DateTimeUDPEngine(port)).start();
     }

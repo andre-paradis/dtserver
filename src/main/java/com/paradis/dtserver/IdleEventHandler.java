@@ -7,6 +7,10 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.CharsetUtil;
 
+/**
+ * Handler that receives event triggered by IdleStateHandler.  If event is idle
+ * timeout on read operation, the channel is closed.
+ */
 public class IdleEventHandler extends ChannelDuplexHandler {
 
     public IdleEventHandler(){

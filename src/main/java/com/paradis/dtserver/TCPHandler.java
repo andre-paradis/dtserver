@@ -9,14 +9,21 @@ import io.netty.util.CharsetUtil;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Created by andre.paradis on 2017-06-27.
+ * Handles channel operations for the TCP engine.
  */
 class TCPHandler extends ChannelInboundHandlerAdapter {
 
+    /**
+     * channelRead is called when a line has been received.  This line is passed through the
+     * command processor to get a response back. Incomplete line are avoided du to the use of
+     * DelimiterBasedFrameDecoder that does the job of buffering packets until a full line  is received.
+     * @param ctx
+     * @param msg
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // Discard the received data silently.
-         String command = ((ByteBuf) msg).toString(StandardCharsets.UTF_8);
+        String command = ((ByteBuf) msg).toString(StandardCharsets.UTF_8);
 
         CommandProcessor cmdProcessor = new CommandProcessor();
         String response = cmdProcessor.processCommand(command);

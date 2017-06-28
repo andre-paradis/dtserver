@@ -41,7 +41,9 @@ public class DateTimeTCPEngine implements Runnable {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             System.out.println("Accepting new connection");
+                            // ensure packet are buffered until a ull line is received.
                             DelimiterBasedFrameDecoder frameDecoder = new DelimiterBasedFrameDecoder(80,true, Delimiters.lineDelimiter());
+                            // disconnect client after a read idle timeout.
                             IdleStateHandler idleHandler = new IdleStateHandler(_idleTimeoutSeconds,0,0);
                             ch.pipeline().addLast(frameDecoder, new TCPHandler(), idleHandler, new IdleEventHandler());
                         }
@@ -52,10 +54,6 @@ public class DateTimeTCPEngine implements Runnable {
             // Bind and start to accept incoming connections.
             ChannelFuture f = b.bind(_port).sync();
             System.out.println("TCP engine now listening to port " + _port);
-
-            // Wait until the server socket is closed.
-            // In this example, this does not happen, but you can do that to gracefully
-            // shut down your server.
             f.channel().closeFuture().sync();
         } catch(Exception ex) {
             System.err.println(ex.getMessage());

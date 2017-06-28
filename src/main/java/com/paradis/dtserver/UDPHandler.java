@@ -7,7 +7,9 @@ import io.netty.channel.socket.DatagramPacket;
 import io.netty.util.CharsetUtil;
 
 /**
- * Created by andre.paradis on 2017-06-27.
+ * Class responsible to handle channel operation for the UDP protocol.  It is assumed that a command
+ * is always received in a single datagram packet.  The same command processor used in the TCP
+ * implementation is reused.
  */
 class UDPHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 

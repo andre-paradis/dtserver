@@ -9,6 +9,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
+/**
+ * Netty server configured to handle the challenge custom protocol over TCP.
+ */
 public class DateTimeUDPEngine implements Runnable {
     private int port;
 
