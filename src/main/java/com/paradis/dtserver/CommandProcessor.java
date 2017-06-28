@@ -6,9 +6,13 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by andre.paradis on 2017-06-27.
+ * Basic command interpreter.  Returns current date in UTC according to the given specification
  */
 public class CommandProcessor {
+
+    public static final String DATE = "date";
+    public static final String TIME = "time";
+    public static final String DATETIME = "datetime";
 
     public CommandProcessor(){
 
@@ -18,14 +22,14 @@ public class CommandProcessor {
         String cmdResult = null;
 
         switch (command) {
-            case "date":
-                cmdResult = getIsoDate();
+            case DATE:
+                cmdResult = formatDate("yyyy-MM-dd");
                 break;
-            case "time":
-                cmdResult = getIsoTime();
+            case TIME:
+                cmdResult = formatDate("hh:mm:ss'Z'");
                 break;
-            case "datetime":
-                cmdResult =  getIsoDateTime();
+            case DATETIME:
+                cmdResult =  formatDate("yyyy-MM-dd'T'hh:mm:ss'Z'");
                 break;
             default:
                 // intentionally blank
@@ -35,23 +39,9 @@ public class CommandProcessor {
         return cmdResult != null ? String.format("%s%n", cmdResult) : null;
     }
 
-    private String getIsoDate() {
+    private String formatDate(String format) {
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        df.setTimeZone(tz);
-        return df.format(new Date());
-    }
-
-    private String getIsoTime() {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("hh:mm:ss'Z'");
-        df.setTimeZone(tz);
-        return df.format(new Date());
-    }
-
-    private String getIsoDateTime() {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+        DateFormat df = new SimpleDateFormat(format);
         df.setTimeZone(tz);
         return df.format(new Date());
     }

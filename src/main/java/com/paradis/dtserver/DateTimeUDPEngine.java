@@ -1,21 +1,13 @@
 package com.paradis.dtserver;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.DatagramPacket;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.CharsetUtil;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class DateTimeUDPEngine implements Runnable {
     private int port;
@@ -30,7 +22,17 @@ public class DateTimeUDPEngine implements Runnable {
             Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioDatagramChannel.class)
-                    .handler(new UDPHandler());
+                    .handler(new ChannelInitializer<DatagramChannel>() {
+                        @Override
+                        public void initChannel(DatagramChannel ch) throws Exception {
+                            ChannelPipeline p = ch.pipeline();
+                            //IdleStateHandler idleHandler = new IdleStateHandler(10,0,0);
+                            p.addLast(new UDPHandler());
+                            //p.addLast(idleHandler);
+                            //p.addLast(new IdleEventHandler());
+                        }
+                    });
+
 
             ChannelFuture f = b.bind(port).sync();
 
