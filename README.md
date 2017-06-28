@@ -1,8 +1,10 @@
-*** Date time server
+# Date time server
+
+## Build instructions:
 
 mvn package
 
-then:
+## Run:
 
 java -jar dtserver-1.0.jar  --port 8080 --idle-timeout 10
 
